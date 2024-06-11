@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Mercadinho</h1>
+        <div class="navbar-links">
+            <a href="index.html">Loja</a>
+            <a href="carrinho.html">Carrinho</a>
+            <a href="admin.html">Administração</a>
+        </div>
+    </nav>
+
+    <div class="payment-box">
+        <form id="paymentForm">
+            <label for="fullName">Nome Completo:</label>
+            <input type="text" id="fullName" name="fullName" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="address">Endereço:</label>
+            <input type="text" id="address" name="address" required>
+
+            <label for="city">Cidade:</label>
+            <input type="text" id="city" name="city" required>
+
+            <label for="state">Estado:</label>
+            <input type="text" id="state" name="state" required>
+
+            <label for="zipCode">CEP:</label>
+            <input type="text" id="zipCode" name="zipCode" required>
+
+
+            <label>Método de Pagamento:</label>
+            <div class="payment-method">
+                
+             
+                    <input type="radio" id="pix" name="paymentMethod" value="pix" required>
+                    <label for="pix">Pix</label>
+                    <input type="radio" id="creditCard" name="paymentMethod" value="creditCard" required>
+                    <label for="creditCard">Cartão de Crédito</label>
+            
+            </div>
+
+            <div id="creditCardInfo">
+                <label for="cardNumber">Número do Cartão:</label>
+                <input type="text" id="cardNumber" name="cardNumber">
+
+                <label for="expiryDate">Data de Validade:</label>
+                <input type="month" id="expiryDate" name="expiryDate">
+
+                <label for="cvv">CVV:</label>
+                <input type="text" id="cvv" name="cvv">
+            </div>
+
+            <button type="submit">Pagar</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('paymentForm').addEventListener('change', function() {
+            const creditCardInfo = document.getElementById('creditCardInfo');
+            if (document.getElementById('creditCard').checked) {
+                creditCardInfo.style.display = 'block';
+            } else {
+                creditCardInfo.style.display = 'none';
+            }
+        });
+
+    
+
+        
+        document.getElementById('paymentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Verificar se o usuário realmente deseja fazer o pagamento
+            if (confirm('Tem certeza de que deseja realizar o pagamento?')) {
+                alert('Pagamento realizado com sucesso!');
+                
+                // Limpar o carrinho
+                localStorage.removeItem('cart');
+                
+                // Redirecionar para a página index.html
+                window.location.href = 'index.html';
+            } else {
+                alert('Pagamento cancelado.');
+            }
+        });
+    </script>
+</body>
+</html>

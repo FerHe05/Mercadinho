@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <h1>Mercadinho</h1>
+        <div class="navbar-links">
+            <a href="index.html">Loja</a>
+            <a href="carrinho.html">Carrinho</a>
+            <a href="admin_Login.html">Administração</a>
+        </div>
+    </nav>
+
+
+    <h1>Produtos Disponíveis</h1>
+    <div id="productList"></div>
+
+
+    <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const productList = document.getElementById('productList');
+    const products = JSON.parse(localStorage.getItem('products')) || [];
+
+    if (products.length === 0) {
+        productList.innerHTML = '<h2>Esperando o Adm adicionar novos produtos!</h2>';
+    } else {
+        products.forEach((product, index) => {
+            const productDiv = document.createElement('div');
+            productDiv.className = 'product';
+
+            productDiv.innerHTML = `
+                <img src="${product.image}" alt="${product.name}">
+                <h2>${product.name}</h2>
+                <h3>${product.description}</h3>
+                <p>Preço: R$ ${product.price}</p>
+                <button onclick="addToCart(${index})">Adicionar ao Carrinho</button>
+            `;
+
+            productList.appendChild(productDiv);
+        });
+    }
+});
+
+function addToCart(index) {
+    const products = JSON.parse(localStorage.getItem('products')) || [];
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    const existingProductIndex = cart.findIndex(item => item.name === products[index].name);
+
+    if (existingProductIndex >= 0) {
+        cart[existingProductIndex].quantity += 1;
+    } else {
+        const productToAdd = { ...products[index], quantity: 1 };
+        cart.push(productToAdd);
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    alert('Produto adicionado ao carrinho!');
+}
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>

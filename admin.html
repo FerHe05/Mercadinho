@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Mercadinho</h1>
+        <div class="navbar-links">
+            <a href="index.html">Loja</a>
+            <a href="carrinho.html">Carrinho</a>
+            <a href="admin_Login.html">Administração</a>
+        </div>
+    </nav>
+
+    <h1>Adicionar Produto</h1>
+    <form id="addProductForm">
+        <label for="productName">Nome do Produto:</label>
+        <input type="text" id="productName" name="productName" required><br>
+
+        <label for="productDescription">Descrição do Produto:</label>
+        <input type="text" id="productDescription" name="productDescription" required><br>
+
+        <label for="productPrice">Preço:</label>
+        <input type="number" id="productPrice" name="productPrice" required><br>
+
+        <label for="productImage">URL da Imagem:</label>
+        <input type="text" id="productImage" name="productImage" required><br>
+
+        <button type="submit">Adicionar Produto</button>
+    </form>
+
+    <h1>Produtos Existentes</h1>
+    <div id="productList"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const productList = document.getElementById('productList');
+            let products = JSON.parse(localStorage.getItem('products')) || [];
+
+            function renderProducts() {
+                productList.innerHTML = '';
+                products.forEach((product, index) => {
+                    const productDiv = document.createElement('div');
+                    productDiv.className = 'product';
+
+                    productDiv.innerHTML = `
+                        <img src="${product.image}" alt="${product.name}">
+                        <h2>${product.name}</h2>
+                        <h2>${product.description}</h2>
+                        <p>Preço: R$ ${product.price}</p>
+                        <button onclick="removeProduct(${index})">Remover Produto</button>
+                        <button onclick="editProduct(${index})">Editar Produto</button>
+                    `;
+
+                    productList.appendChild(productDiv);
+                });
+            }
+
+            function saveProducts() {
+                localStorage.setItem('products', JSON.stringify(products));
+            }
+
+            document.getElementById('addProductForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                const name = document.getElementById('productName').value;
+                const description = document.getElementById('productDescription').value
+                const price = document.getElementById('productPrice').value;
+                const image = document.getElementById('productImage').value;
+
+                products.push({ name, description, price, image });
+                saveProducts();
+                
+                renderProducts();
+                
+                alert('Produto adicionado com sucesso!');
+                this.reset();
+            });
+
+            window.removeProduct = function(index) {
+                products.splice(index, 1);
+                saveProducts();
+                renderProducts();
+                alert('Produto removido com sucesso!');
+            };
+
+            window.editProduct = function(index) {
+                const newName = prompt('Novo nome do produto:', products[index].name);
+                const newDescription = prompt('Nova descrição do produto:', products[index].name);
+                const newPrice = prompt('Novo preço do produto:', products[index].price);
+                const newImage = prompt('Nova URL da imagem:', products[index].image);
+
+                if (newName && newDescription && newPrice && newImage) {
+                    products[index] = { name: newName, description: newDescription, price: newPrice, image: newImage };
+                    saveProducts();
+                    renderProducts();
+                    alert('Produto editado com sucesso!');
+                }
+            };
+
+            renderProducts();
+        });
+    </script>
+</body>
+</html>

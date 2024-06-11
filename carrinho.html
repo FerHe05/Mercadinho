@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Mercadinho</h1>
+        <div class="navbar-links">
+            <a href="index.html">Loja</a>
+            <a href="carrinho.html">Carrinho</a>
+            <a href="admin_Login.html">Administração</a>
+        </div>
+    </nav>
+
+    <h1>Seu Carrinho</h1>
+    <div id="cartList"></div>
+    <h2 id="totalPrice"></h2>
+    <button onclick="goToPayment()">Prosseguir para Pagamento</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCart();
+        });
+
+        function updateCart() {
+            const cartList = document.getElementById('cartList');
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cartList.innerHTML = '';
+            let total = 0;
+
+            cart.forEach((product, index) => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product';
+
+                productDiv.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <h2>${product.name}</h2>
+                    <h2>${product.description}</h2>
+                    <p>Preço: R$ ${product.price}</p>
+                    <p>Quantidade: 
+                        <button onclick="decreaseQuantity(${index})">-</button>
+                        ${product.quantity}
+                        <button onclick="increaseQuantity(${index})">+</button>
+                    </p>
+                    <button onclick="removeFromCart(${index})">Remover</button>
+                `;
+
+                cartList.appendChild(productDiv);
+                total += product.price * product.quantity;
+            });
+
+            document.getElementById('totalPrice').innerText = `Total: R$ ${total.toFixed(2)}`;
+        }
+
+        function increaseQuantity(index) {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart[index].quantity += 1;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        }
+
+        function decreaseQuantity(index) {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart[index].quantity > 1) {
+                cart[index].quantity -= 1;
+            } else {
+                cart.splice(index, 1);
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        }
+
+        function removeFromCart(index) {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        }
+
+        function goToPayment(index) {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if(cart < 1){
+                window.alert("Você não tem produtos adicionados! Adicione antes de prosseguir para pagamento");             
+            }else{
+                location.href = 'payment.html';
+            }
+          
+        }
+    </script>
+</body>
+</html>
